@@ -24,27 +24,10 @@ Modern comic reader web app supporting Manga, Manhwa, and Manhua with browser tr
 - **CSS Modules** - Styling
 - **Axios** - HTTP client
 
-## 🎯 Scripts
-
-```bash
-npm run dev      # Start dev server
-npm run build    # Production build
-npm run preview  # Preview build
-npm run lint     # Run linter
-```
-
 ## 🌐 Browser Translation
 
 **Chrome/Edge:** Right-click → "Translate to Indonesian"  
 **Firefox:** Install "Firefox Translations" addon
-
-## 🔧 Configuration
-
-Edit `.env`:
-```env
-VITE_API_BASE_URL=http://localhost:3000/api
-VITE_APP_TITLE=Komik Reader
-```
 
 ## 🚀 Deployment
 
