@@ -1,0 +1,169 @@
+komik-reader/
+├── public/
+│   ├── logo.svg
+│   └── favicon.ico
+│
+├── src/
+│   ├── api/
+│   │   ├── komikApi.js              # API calls untuk fetch komik
+│   │   ├── mangadexApi.js           # MangaDex API integration
+│   │   └── searchApi.js             # Search komik
+│   │
+│   ├── assets/
+│   │   ├── images/
+│   │   │   ├── placeholder.png
+│   │   │   └── no-cover.jpg
+│   │   └── icons/
+│   │       ├── manga-icon.svg
+│   │       ├── manhwa-icon.svg
+│   │       └── manhua-icon.svg
+│   │
+│   ├── components/
+│   │   ├── common/
+│   │   │   ├── Button/
+│   │   │   │   ├── Button.jsx
+│   │   │   │   └── Button.module.css
+│   │   │   ├── Card/
+│   │   │   │   ├── ComicCard.jsx
+│   │   │   │   └── ComicCard.module.css
+│   │   │   ├── Input/
+│   │   │   │   ├── SearchInput.jsx
+│   │   │   │   └── SearchInput.module.css
+│   │   │   ├── Loading/
+│   │   │   │   ├── LoadingSpinner.jsx
+│   │   │   │   └── LoadingSpinner.module.css
+│   │   │   └── Modal/
+│   │   │       ├── Modal.jsx
+│   │   │       └── Modal.module.css
+│   │   │
+│   │   ├── layout/
+│   │   │   ├── Header/
+│   │   │   │   ├── Header.jsx
+│   │   │   │   └── Header.module.css
+│   │   │   ├── Navbar/
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   └── Navbar.module.css
+│   │   │   ├── Footer/
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   └── Footer.module.css
+│   │   │   └── Sidebar/
+│   │   │       ├── Sidebar.jsx
+│   │   │       └── Sidebar.module.css
+│   │   │
+│   │   └── features/
+│   │       ├── ComicList/
+│   │       │   ├── ComicGrid.jsx
+│   │       │   ├── ComicList.jsx
+│   │       │   └── ComicFilter.jsx
+│   │       ├── ComicReader/
+│   │       │   ├── Reader.jsx
+│   │       │   ├── ReaderControls.jsx
+│   │       │   ├── PageNavigator.jsx
+│   │       │   ├── TranslateButton.jsx
+│   │       │   └── Reader.module.css
+│   │       ├── ComicDetail/
+│   │       │   ├── ComicInfo.jsx
+│   │       │   ├── ChapterList.jsx
+│   │       │   └── ComicDetail.module.css
+│   │       └── Search/
+│   │           ├── SearchBar.jsx
+│   │           ├── SearchResults.jsx
+│   │           └── SearchFilter.jsx
+│   │
+│   ├── features/
+│   │   ├── bookmarks/
+│   │   │   ├── components/
+│   │   │   │   └── BookmarkButton.jsx
+│   │   │   ├── hooks/
+│   │   │   │   └── useBookmark.js
+│   │   │   └── bookmarkSlice.js
+│   │   │
+│   │   ├── history/
+│   │   │   ├── components/
+│   │   │   │   └── HistoryList.jsx
+│   │   │   ├── hooks/
+│   │   │   │   └── useHistory.js
+│   │   │   └── historySlice.js
+│   │   │
+│   │   └── favorites/
+│   │       ├── components/
+│   │       │   └── FavoriteButton.jsx
+│   │       ├── hooks/
+│   │       │   └── useFavorites.js
+│   │       └── favoritesSlice.js
+│   │
+│   ├── hooks/
+│   │   ├── useComicReader.js        # Custom hook untuk reader
+│   │   ├── useTranslate.js          # Hook untuk trigger translate
+│   │   ├── useLocalStorage.js       # Save reading progress
+│   │   ├── useDebounce.js           # Debounce search
+│   │   └── useInfiniteScroll.js     # Infinite scroll komik list
+│   │
+│   ├── pages/
+│   │   ├── Home/
+│   │   │   ├── Home.jsx
+│   │   │   └── Home.module.css
+│   │   ├── Browse/
+│   │   │   ├── BrowsePage.jsx
+│   │   │   └── BrowsePage.module.css
+│   │   ├── ComicDetail/
+│   │   │   ├── ComicDetailPage.jsx
+│   │   │   └── ComicDetailPage.module.css
+│   │   ├── Reader/
+│   │   │   ├── ReaderPage.jsx
+│   │   │   └── ReaderPage.module.css
+│   │   ├── Search/
+│   │   │   ├── SearchPage.jsx
+│   │   │   └── SearchPage.module.css
+│   │   ├── Bookmarks/
+│   │   │   ├── BookmarksPage.jsx
+│   │   │   └── BookmarksPage.module.css
+│   │   ├── History/
+│   │   │   ├── HistoryPage.jsx
+│   │   │   └── HistoryPage.module.css
+│   │   └── NotFound/
+│   │       ├── NotFound.jsx
+│   │       └── NotFound.module.css
+│   │
+│   ├── routes/
+│   │   ├── AppRoutes.jsx            # React Router configuration
+│   │   └── ProtectedRoute.jsx       # Route protection (optional)
+│   │
+│   ├── store/
+│   │   ├── store.js                 # Redux store config
+│   │   ├── slices/
+│   │   │   ├── comicSlice.js
+│   │   │   ├── readerSlice.js
+│   │   │   └── uiSlice.js
+│   │   └── middleware/
+│   │       └── localStorageMiddleware.js
+│   │
+│   ├── styles/
+│   │   ├── global.css               # Global styles
+│   │   ├── variables.css            # CSS variables (colors, spacing)
+│   │   ├── reset.css                # CSS reset
+│   │   └── themes/
+│   │       ├── light.css
+│   │       └── dark.css
+│   │
+│   ├── utils/
+│   │   ├── helpers.js               # Helper functions
+│   │   ├── formatters.js            # Format data (date, number, etc)
+│   │   ├── validators.js            # Validation functions
+│   │   ├── imageOptimizer.js        # Optimize image loading
+│   │   └── translateHelper.js       # Helper untuk translate feature
+│   │
+│   ├── constants/
+│   │   ├── apiEndpoints.js          # API endpoints
+│   │   ├── routes.js                # Route paths constants
+│   │   ├── comicTypes.js            # Manga, Manhwa, Manhua types
+│   │   └── genres.js                # Genre list
+│   │
+│   ├── contexts/
+│   │   ├── ThemeContext.jsx         # Dark/Light theme
+│   │   └── ReaderContext.jsx        # Reader settings context
+│   │
+│   ├── App.jsx
+│   ├── App.css
+│   └── main.jsx
+└── README.md
