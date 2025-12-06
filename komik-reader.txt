@@ -1,169 +1,329 @@
-komik-reader/
-├── public/
-│   ├── logo.svg
-│   └── favicon.ico
+comic-mtl-website/
 │
-├── src/
-│   ├── api/
-│   │   ├── komikApi.js              # API calls untuk fetch komik
-│   │   ├── mangadexApi.js           # MangaDex API integration
-│   │   └── searchApi.js             # Search komik
+├── 📂 public/
+│   ├── 📂 images/
+│   │   ├── 📂 placeholders/
+│   │   │   ├── comic-placeholder.png
+│   │   │   ├── avatar-placeholder.png
+│   │   │   └── banner-placeholder.png
+│   │   ├── 📂 icons/
+│   │   │   ├── logo.svg
+│   │   │   ├── favicon.ico
+│   │   │   └── app-icons/ (berbagai ukuran)
+│   │   └── 📂 banners/
+│   │       └── default-banner.jpg
+│   ├── 📂 fonts/
+│   │   └── (custom fonts jika diperlukan)
+│   ├── manifest.json
+│   └── robots.txt
+│
+├── 📂 src/
 │   │
-│   ├── assets/
-│   │   ├── images/
-│   │   │   ├── placeholder.png
-│   │   │   └── no-cover.jpg
-│   │   └── icons/
-│   │       ├── manga-icon.svg
-│   │       ├── manhwa-icon.svg
-│   │       └── manhua-icon.svg
-│   │
-│   ├── components/
-│   │   ├── common/
-│   │   │   ├── Button/
-│   │   │   │   ├── Button.jsx
-│   │   │   │   └── Button.module.css
-│   │   │   ├── Card/
-│   │   │   │   ├── ComicCard.jsx
-│   │   │   │   └── ComicCard.module.css
-│   │   │   ├── Input/
-│   │   │   │   ├── SearchInput.jsx
-│   │   │   │   └── SearchInput.module.css
-│   │   │   ├── Loading/
-│   │   │   │   ├── LoadingSpinner.jsx
-│   │   │   │   └── LoadingSpinner.module.css
-│   │   │   └── Modal/
-│   │   │       ├── Modal.jsx
-│   │   │       └── Modal.module.css
+│   ├── 📂 app/
+│   │   ├── layout.jsx                    # Root layout
+│   │   ├── page.jsx                      # Homepage
+│   │   ├── loading.jsx                   # Global loading state
+│   │   ├── error.jsx                     # Global error boundary
+│   │   ├── not-found.jsx                 # 404 page
 │   │   │
-│   │   ├── layout/
-│   │   │   ├── Header/
-│   │   │   │   ├── Header.jsx
-│   │   │   │   └── Header.module.css
-│   │   │   ├── Navbar/
-│   │   │   │   ├── Navbar.jsx
-│   │   │   │   └── Navbar.module.css
-│   │   │   ├── Footer/
-│   │   │   │   ├── Footer.jsx
-│   │   │   │   └── Footer.module.css
-│   │   │   └── Sidebar/
-│   │   │       ├── Sidebar.jsx
-│   │   │       └── Sidebar.module.css
+│   │   ├── 📂 (auth)/                    # Auth route group
+│   │   │   ├── layout.jsx
+│   │   │   ├── 📂 login/
+│   │   │   │   └── page.jsx
+│   │   │   ├── 📂 register/
+│   │   │   │   └── page.jsx
+│   │   │   ├── 📂 forgot-password/
+│   │   │   │   └── page.jsx
+│   │   │   └── 📂 reset-password/
+│   │   │       └── page.jsx
 │   │   │
-│   │   └── features/
-│   │       ├── ComicList/
-│   │       │   ├── ComicGrid.jsx
-│   │       │   ├── ComicList.jsx
-│   │       │   └── ComicFilter.jsx
-│   │       ├── ComicReader/
-│   │       │   ├── Reader.jsx
-│   │       │   ├── ReaderControls.jsx
-│   │       │   ├── PageNavigator.jsx
-│   │       │   ├── TranslateButton.jsx
-│   │       │   └── Reader.module.css
-│   │       ├── ComicDetail/
-│   │       │   ├── ComicInfo.jsx
-│   │       │   ├── ChapterList.jsx
-│   │       │   └── ComicDetail.module.css
-│   │       └── Search/
-│   │           ├── SearchBar.jsx
-│   │           ├── SearchResults.jsx
-│   │           └── SearchFilter.jsx
-│   │
-│   ├── features/
-│   │   ├── bookmarks/
-│   │   │   ├── components/
-│   │   │   │   └── BookmarkButton.jsx
-│   │   │   ├── hooks/
-│   │   │   │   └── useBookmark.js
-│   │   │   └── bookmarkSlice.js
+│   │   ├── 📂 (main)/                    # Main layout route group
+│   │   │   ├── layout.jsx                # Layout dengan navbar & footer
+│   │   │   │
+│   │   │   ├── 📂 comics/
+│   │   │   │   ├── page.jsx              # Daftar semua komik
+│   │   │   │   ├── loading.jsx
+│   │   │   │   │
+│   │   │   │   ├── 📂 [slug]/            # Detail komik
+│   │   │   │   │   ├── page.jsx
+│   │   │   │   │   ├── loading.jsx
+│   │   │   │   │   ├── error.jsx
+│   │   │   │   │   │
+│   │   │   │   │   └── 📂 [chapterId]/   # Baca chapter
+│   │   │   │   │       ├── page.jsx
+│   │   │   │   │       ├── loading.jsx
+│   │   │   │   │       └── error.jsx
+│   │   │   │   │
+│   │   │   │   └── 📂 genre/
+│   │   │   │       └── 📂 [genreName]/
+│   │   │   │           └── page.jsx
+│   │   │   │
+│   │   │   ├── 📂 latest/                # Komik terbaru
+│   │   │   │   └── page.jsx
+│   │   │   │
+│   │   │   ├── 📂 popular/               # Komik populer
+│   │   │   │   └── page.jsx
+│   │   │   │
+│   │   │   ├── 📂 completed/             # Komik tamat
+│   │   │   │   └── page.jsx
+│   │   │   │
+│   │   │   ├── 📂 ongoing/               # Komik ongoing
+│   │   │   │   └── page.jsx
+│   │   │   │
+│   │   │   ├── 📂 search/                # Halaman pencarian
+│   │   │   │   └── page.jsx
+│   │   │   │
+│   │   │   ├── 📂 bookmark/              # Bookmark user
+│   │   │   │   └── page.jsx
+│   │   │   │
+│   │   │   ├── 📂 history/               # History baca
+│   │   │   │   └── page.jsx
+│   │   │   │
+│   │   │   └── 📂 profile/               # Profile user
+│   │   │       ├── page.jsx
+│   │   │       ├── 📂 settings/
+│   │   │       │   └── page.jsx
+│   │   │       └── 📂 preferences/
+│   │   │           └── page.jsx
 │   │   │
-│   │   ├── history/
-│   │   │   ├── components/
-│   │   │   │   └── HistoryList.jsx
-│   │   │   ├── hooks/
-│   │   │   │   └── useHistory.js
-│   │   │   └── historySlice.js
+│   │   ├── 📂 api/                       # API Routes
+│   │   │   ├── 📂 comics/
+│   │   │   │   ├── route.js              # GET all comics
+│   │   │   │   └── 📂 [id]/
+│   │   │   │       ├── route.js          # GET comic by ID
+│   │   │   │       └── 📂 chapters/
+│   │   │   │           └── route.js
+│   │   │   │
+│   │   │   ├── 📂 translate/
+│   │   │   │   └── route.js              # Translation endpoint
+│   │   │   │
+│   │   │   ├── 📂 auth/
+│   │   │   │   ├── 📂 login/
+│   │   │   │   │   └── route.js
+│   │   │   │   ├── 📂 register/
+│   │   │   │   │   └── route.js
+│   │   │   │   └── 📂 logout/
+│   │   │   │       └── route.js
+│   │   │   │
+│   │   │   ├── 📂 user/
+│   │   │   │   ├── 📂 bookmark/
+│   │   │   │   │   └── route.js
+│   │   │   │   ├── 📂 history/
+│   │   │   │   │   └── route.js
+│   │   │   │   └── 📂 preferences/
+│   │   │   │       └── route.js
+│   │   │   │
+│   │   │   └── 📂 search/
+│   │   │       └── route.js
 │   │   │
-│   │   └── favorites/
-│   │       ├── components/
-│   │       │   └── FavoriteButton.jsx
-│   │       ├── hooks/
-│   │       │   └── useFavorites.js
-│   │       └── favoritesSlice.js
+│   │   └── 📂 admin/                     # Admin dashboard
+│   │       ├── layout.jsx
+│   │       ├── page.jsx
+│   │       ├── 📂 comics/
+│   │       │   ├── page.jsx
+│   │       │   ├── 📂 create/
+│   │       │   │   └── page.jsx
+│   │       │   └── 📂 [id]/
+│   │       │       └── 📂 edit/
+│   │       │           └── page.jsx
+│   │       ├── 📂 chapters/
+│   │       │   └── page.jsx
+│   │       └── 📂 users/
+│   │           └── page.jsx
 │   │
-│   ├── hooks/
-│   │   ├── useComicReader.js        # Custom hook untuk reader
-│   │   ├── useTranslate.js          # Hook untuk trigger translate
-│   │   ├── useLocalStorage.js       # Save reading progress
-│   │   ├── useDebounce.js           # Debounce search
-│   │   └── useInfiniteScroll.js     # Infinite scroll komik list
+│   ├── 📂 components/
+│   │   │
+│   │   ├── 📂 layout/
+│   │   │   ├── Header.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   └── MobileMenu.jsx
+│   │   │
+│   │   ├── 📂 comic/
+│   │   │   ├── ComicCard.jsx             # Card untuk list komik
+│   │   │   ├── ComicGrid.jsx             # Grid layout komik
+│   │   │   ├── ComicList.jsx             # List layout komik
+│   │   │   ├── ComicDetail.jsx           # Detail komik
+│   │   │   ├── ComicCover.jsx            # Cover image komik
+│   │   │   ├── ComicInfo.jsx             # Info komik (genre, author, dll)
+│   │   │   ├── ComicDescription.jsx      # Deskripsi komik
+│   │   │   ├── ComicRating.jsx           # Rating komik
+│   │   │   └── ComicStats.jsx            # Statistik (views, likes, dll)
+│   │   │
+│   │   ├── 📂 chapter/
+│   │   │   ├── ChapterList.jsx           # List chapter
+│   │   │   ├── ChapterItem.jsx           # Single chapter item
+│   │   │   ├── ChapterReader.jsx         # Reader untuk baca chapter
+│   │   │   ├── ChapterNavigation.jsx     # Navigasi prev/next chapter
+│   │   │   ├── ChapterSelector.jsx       # Dropdown pilih chapter
+│   │   │   └── ChapterProgress.jsx       # Progress bar baca
+│   │   │
+│   │   ├── 📂 reader/
+│   │   │   ├── ImageReader.jsx           # Reader mode image
+│   │   │   ├── ReaderControls.jsx        # Kontrol reader (zoom, dll)
+│   │   │   ├── ReaderSettings.jsx        # Settings reader
+│   │   │   ├── PageNavigation.jsx        # Navigasi antar halaman
+│   │   │   ├── PageCounter.jsx           # Counter halaman
+│   │   │   └── ReadingMode.jsx           # Toggle mode baca
+│   │   │
+│   │   ├── 📂 translation/
+│   │   │   ├── TranslationPanel.jsx      # Panel terjemahan
+│   │   │   ├── LanguageSelector.jsx      # Pilih bahasa terjemahan
+│   │   │   ├── TranslationToggle.jsx     # Toggle on/off translate
+│   │   │   ├── TranslationOverlay.jsx    # Overlay text terjemahan
+│   │   │   ├── TranslationSettings.jsx   # Settings MTL
+│   │   │   └── TranslationCache.jsx      # Cache management
+│   │   │
+│   │   ├── 📂 search/
+│   │   │   ├── SearchBar.jsx             # Search bar
+│   │   │   ├── SearchResults.jsx         # Hasil pencarian
+│   │   │   ├── SearchFilters.jsx         # Filter pencarian
+│   │   │   ├── SearchSuggestions.jsx     # Saran pencarian
+│   │   │   └── AdvancedSearch.jsx        # Pencarian advanced
+│   │   │
+│   │   ├── 📂 user/
+│   │   │   ├── UserProfile.jsx           # Profile user
+│   │   │   ├── UserAvatar.jsx            # Avatar user
+│   │   │   ├── UserStats.jsx             # Statistik user
+│   │   │   ├── UserPreferences.jsx       # Preferensi user
+│   │   │   ├── BookmarkButton.jsx        # Tombol bookmark
+│   │   │   └── LoginButton.jsx           # Tombol login
+│   │   │
+│   │   ├── 📂 ui/
+│   │   │   ├── Button.jsx                # Custom button
+│   │   │   ├── Card.jsx                  # Card component
+│   │   │   ├── Modal.jsx                 # Modal dialog
+│   │   │   ├── Dropdown.jsx              # Dropdown menu
+│   │   │   ├── Tabs.jsx                  # Tabs component
+│   │   │   ├── Badge.jsx                 # Badge/tag
+│   │   │   ├── Skeleton.jsx              # Skeleton loader
+│   │   │   ├── Spinner.jsx               # Loading spinner
+│   │   │   ├── Tooltip.jsx               # Tooltip
+│   │   │   ├── Toast.jsx                 # Toast notification
+│   │   │   ├── Pagination.jsx            # Pagination
+│   │   │   ├── Input.jsx                 # Input field
+│   │   │   ├── Checkbox.jsx              # Checkbox
+│   │   │   ├── Radio.jsx                 # Radio button
+│   │   │   ├── Select.jsx                # Select dropdown
+│   │   │   ├── Slider.jsx                # Slider
+│   │   │   └── Switch.jsx                # Toggle switch
+│   │   │
+│   │   ├── 📂 filter/
+│   │   │   ├── GenreFilter.jsx           # Filter berdasarkan genre
+│   │   │   ├── StatusFilter.jsx          # Filter status (ongoing, dll)
+│   │   │   ├── SortFilter.jsx            # Sorting options
+│   │   │   └── FilterPanel.jsx           # Panel filter lengkap
+│   │   │
+│   │   ├── 📂 carousel/
+│   │   │   ├── ComicCarousel.jsx         # Carousel komik
+│   │   │   ├── BannerCarousel.jsx        # Carousel banner
+│   │   │   └── RecommendationCarousel.jsx
+│   │   │
+│   │   └── 📂 carousel/
+│   │       ├── SEO.jsx                   # SEO component
+│   │       ├── ErrorBoundary.jsx         # Error boundary
+│   │       ├── LoadingScreen.jsx         # Full screen loading
+│   │       ├── EmptyState.jsx            # Empty state
+│   │       └── BackToTop.jsx             # Back to top button
 │   │
-│   ├── pages/
-│   │   ├── Home/
-│   │   │   ├── Home.jsx
-│   │   │   └── Home.module.css
-│   │   ├── Browse/
-│   │   │   ├── BrowsePage.jsx
-│   │   │   └── BrowsePage.module.css
-│   │   ├── ComicDetail/
-│   │   │   ├── ComicDetailPage.jsx
-│   │   │   └── ComicDetailPage.module.css
-│   │   ├── Reader/
-│   │   │   ├── ReaderPage.jsx
-│   │   │   └── ReaderPage.module.css
-│   │   ├── Search/
-│   │   │   ├── SearchPage.jsx
-│   │   │   └── SearchPage.module.css
-│   │   ├── Bookmarks/
-│   │   │   ├── BookmarksPage.jsx
-│   │   │   └── BookmarksPage.module.css
-│   │   ├── History/
-│   │   │   ├── HistoryPage.jsx
-│   │   │   └── HistoryPage.module.css
-│   │   └── NotFound/
-│   │       ├── NotFound.jsx
-│   │       └── NotFound.module.css
+│   ├── 📂 hooks/
+│   │   ├── useAuth.js                    # Hook untuk authentication
+│   │   ├── useComics.js                  # Hook untuk data komik
+│   │   ├── useChapters.js                # Hook untuk chapters
+│   │   ├── useTranslation.js             # Hook untuk MTL
+│   │   ├── useBookmark.js                # Hook untuk bookmark
+│   │   ├── useHistory.js                 # Hook untuk reading history
+│   │   ├── useSearch.js                  # Hook untuk search
+│   │   ├── useInfiniteScroll.js          # Hook infinite scroll
+│   │   ├── useLocalStorage.js            # Hook local storage
+│   │   ├── useDebounce.js                # Hook debounce
+│   │   ├── useMediaQuery.js              # Hook responsive
+│   │   ├── useKeyboard.js                # Hook keyboard shortcuts
+│   │   └── useReader.js                  # Hook untuk reader state
 │   │
-│   ├── routes/
-│   │   ├── AppRoutes.jsx            # React Router configuration
-│   │   └── ProtectedRoute.jsx       # Route protection (optional)
+│   ├── 📂 lib/
+│   │   ├── 📂 api/
+│   │   │   ├── client.js                 # API client (axios/fetch)
+│   │   │   ├── endpoints.js              # API endpoints
+│   │   │   └── interceptors.js           # Request/response interceptors
+│   │   │
+│   │   ├── 📂 translation/
+│   │   │   ├── translator.js             # Translation service
+│   │   │   ├── languages.js              # Supported languages
+│   │   │   ├── cache.js                  # Translation cache
+│   │   │   └── providers/
+│   │   │       ├── google-translate.js
+│   │   │       ├── deepl.js
+│   │   │       └── custom-api.js
+│   │   │
+│   │   ├── 📂 storage/
+│   │   │   ├── localStorage.js           # Local storage utilities
+│   │   │   ├── sessionStorage.js         # Session storage
+│   │   │   └── indexedDB.js              # IndexedDB wrapper
+│   │   │
+│   │   ├── 📂 utils/
+│   │   │   ├── format.js                 # Format utilities
+│   │   │   ├── validation.js             # Validation functions
+│   │   │   ├── date.js                   # Date utilities
+│   │   │   ├── image.js                  # Image utilities
+│   │   │   ├── url.js                    # URL utilities
+│   │   │   └── string.js                 # String utilities
+│   │   │
+│   │   └── 📂 constants/
+│   │       ├── genres.js                 # Genre constants
+│   │       ├── languages.js              # Language constants
+│   │       ├── routes.js                 # Route constants
+│   │       └── config.js                 # App config
 │   │
-│   ├── store/
-│   │   ├── store.js                 # Redux store config
-│   │   ├── slices/
+│   ├── 📂 types/
+│   │   ├── comic.js                      # Comic types (JSDoc comments)
+│   │   ├── chapter.js                    # Chapter types
+│   │   ├── user.js                       # User types
+│   │   ├── translation.js                # Translation types
+│   │   ├── api.js                        # API response types
+│   │   └── index.js                      # Export all types
+│   │
+│   ├── 📂 context/
+│   │   ├── AuthContext.jsx               # Auth context
+│   │   ├── ThemeContext.jsx              # Theme context (dark mode)
+│   │   ├── TranslationContext.jsx        # Translation context
+│   │   ├── ReaderContext.jsx             # Reader settings context
+│   │   └── NotificationContext.jsx       # Notification context
+│   │
+│   ├── 📂 store/                         # State management (jika pakai Redux/Zustand)
+│   │   ├── index.js
+│   │   ├── 📂 slices/
+│   │   │   ├── authSlice.js
 │   │   │   ├── comicSlice.js
 │   │   │   ├── readerSlice.js
-│   │   │   └── uiSlice.js
-│   │   └── middleware/
-│   │       └── localStorageMiddleware.js
+│   │   │   └── translationSlice.js
+│   │   └── 📂 middleware/
+│   │       └── logger.js
 │   │
-│   ├── styles/
-│   │   ├── global.css               # Global styles
-│   │   ├── variables.css            # CSS variables (colors, spacing)
-│   │   ├── reset.css                # CSS reset
-│   │   └── themes/
-│   │       ├── light.css
-│   │       └── dark.css
+│   ├── 📂 styles/
+│   │   ├── globals.css                   # Global styles
+│   │   ├── variables.css                 # CSS variables
+│   │   ├── reset.css                     # CSS reset
+│   │   └── 📂 components/
+│   │       └── (component-specific styles)
 │   │
-│   ├── utils/
-│   │   ├── helpers.js               # Helper functions
-│   │   ├── formatters.js            # Format data (date, number, etc)
-│   │   ├── validators.js            # Validation functions
-│   │   ├── imageOptimizer.js        # Optimize image loading
-│   │   └── translateHelper.js       # Helper untuk translate feature
-│   │
-│   ├── constants/
-│   │   ├── apiEndpoints.js          # API endpoints
-│   │   ├── routes.js                # Route paths constants
-│   │   ├── comicTypes.js            # Manga, Manhwa, Manhua types
-│   │   └── genres.js                # Genre list
-│   │
-│   ├── contexts/
-│   │   ├── ThemeContext.jsx         # Dark/Light theme
-│   │   └── ReaderContext.jsx        # Reader settings context
-│   │
-│   ├── App.jsx
-│   ├── App.css
-│   └── main.jsx
+│   └── 📂 config/
+│       ├── site.js                       # Site configuration
+│       ├── seo.js                        # SEO configuration
+│       └── api.js                        # API configuration
+│
+├── 📂 tests/                             # Testing
+│   ├── 📂 unit/
+│   ├── 📂 integration/
+│   └── 📂 e2e/
+│
+├── .env.local                            # Environment variables
+├── .env.example                          # Example env file
+├── .eslintrc.json                        # ESLint config
+├── .prettierrc                           # Prettier config
+├── next.config.js                        # Next.js config
+├── jsconfig.json                         # JavaScript config (pengganti tsconfig)
+├── tailwind.config.js                    # Tailwind config (jika pakai)
+├── package.json
 └── README.md

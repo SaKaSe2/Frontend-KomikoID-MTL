@@ -1,0 +1,88 @@
+# robots.txt untuk Website Komik MTL
+
+# Izinkan semua search engine crawl seluruh website
+User-agent: *
+Allow: /
+
+# Crawl delay untuk menghindari overload server
+Crawl-delay: 1
+
+# Izinkan spesifik bot populer dengan prioritas lebih
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block halaman admin dan API internal
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /api/
+Disallow: /api/*
+
+# Block halaman auth (login, register, dll)
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+
+# Block halaman user private
+Disallow: /profile
+Disallow: /profile/*
+Disallow: /bookmark
+Disallow: /history
+
+# Block halaman pencarian dan filter (hindari duplicate content)
+Disallow: /search?
+Disallow: /*?query=
+Disallow: /*?filter=
+Disallow: /*?sort=
+Disallow: /*&page=
+
+# Izinkan konten komik utama untuk di-crawl
+Allow: /comics/
+Allow: /comics/*/
+Allow: /comics/*/[0-9]*/
+Allow: /latest
+Allow: /popular
+Allow: /completed
+Allow: /ongoing
+
+# Izinkan halaman genre
+Allow: /comics/genre/
+Allow: /comics/genre/*/
+
+# Izinkan gambar di-crawl untuk Google Images
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+Allow: /*.webp
+Allow: /*.svg
+
+# Block placeholder images dan icons dari image search
+Disallow: /images/placeholders/
+Disallow: /images/icons/
+
+# Block AI scraper bots (opsional, untuk proteksi konten)
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+# Sitemap location (sesuaikan dengan URL website Anda)
+Sitemap: https://example.com/sitemap.xml
+Sitemap: https://example.com/sitemap-index.xml
