@@ -1,61 +1,36 @@
-# 📚 Komik Reader
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-Modern comic reader web app supporting Manga, Manhwa, and Manhua with browser translation support.
+## Getting Started
 
-![React](https://img.shields.io/badge/React-18.x-61dafb.svg)
-![Vite](https://img.shields.io/badge/Vite-5.x-646cff.svg)
+First, run the development server:
 
-## ✨ Features
-
-- 📖 Read Manga, Manhwa, and Manhua
-- 🌐 Browser translation integration
-- 🔖 Bookmarks & favorites
-- 📜 Reading history tracking
-- 🎨 Dark/Light theme
-- 🔍 Search & filter by genre
-- ⚡ Fast image loading
-- 📱 Fully responsive
-
-## 🚀 Tech Stack
-
-- **React 18** + **Vite 5**
-- **React Router** - Routing
-- **Redux Toolkit** - State management
-- **CSS Modules** - Styling
-- **Axios** - HTTP client
-
-## 🌐 Browser Translation
-
-**Chrome/Edge:** Right-click → "Translate to Indonesian"  
-**Firefox:** Install "Firefox Translations" addon
-
-## 🚀 Deployment
-
-**Vercel:**
 ```bash
-vercel
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-**Netlify:**
-```bash
-netlify deploy --prod
-```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 📝 Roadmap
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-- [ ] User authentication
-- [ ] Comment system
-- [ ] PWA offline mode
-- [ ] Multi-language UI
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## 📄 License
+## Learn More
 
-MIT License
+To learn more about Next.js, take a look at the following resources:
 
-## 📧 Contact
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-Rikza - [@yourtwitter](https://twitter.com/yourtwitter)
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
----
+## Deploy on Vercel
 
-Made with by [Rikza]
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
