@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# KomikoID-MTL Frontend
 
-## Getting Started
+Frontend untuk website komik dengan fitur Machine Translation (MTL).
 
-First, run the development server:
+## Tech Stack
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Next.js | 14.x | React Framework |
+| React | 18.x | UI Library |
+| Tailwind CSS | 3.x | Styling |
+| Axios | - | HTTP Client |
+| Context API | - | State Management |
+
+## Quick Start
 
 ```bash
+# 1. Clone dan install
+git clone <repository-url>
+cd Frontend-KomikoID-MTL
+npm install
+
+# 2. Setup environment
+cp .env.example .env.local
+# Edit .env.local dengan backend URL
+
+# 3. Jalankan
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Documentation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Dokumentasi lengkap tersedia di folder `document/`:
 
-## Learn More
+- [Setup Guide](document/setup/) - Instalasi dan konfigurasi
+- [Components](document/components/) - Dokumentasi komponen UI
 
-To learn more about Next.js, take a look at the following resources:
+Baca [document/README.md](document/README.md) untuk panduan lengkap.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+Frontend-KomikoID-MTL/
+├── src/
+│   ├── app/              # Next.js App Router pages
+│   ├── components/       # Reusable UI components
+│   ├── context/          # React Context providers
+│   ├── hooks/            # Custom React hooks
+│   └── lib/              # Utilities dan API client
+├── public/               # Static assets
+└── document/             # Documentation
+```
 
-## Deploy on Vercel
+## Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Browse dan search comics
+- Read chapters dengan image optimization
+- Switch original/translated images
+- Dark mode / Light mode
+- Responsive design
+- Admin dashboard
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT License
