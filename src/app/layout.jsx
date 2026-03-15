@@ -1,16 +1,17 @@
 'use client';
 
-import { Inter } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/context/ToastContext';
 import GlobalProviders from '@/components/layout/GlobalProviders';
 
-const inter = Inter({
+const poppins = Poppins({
+    weight: ['300', '400', '500', '600', '700'],
     subsets: ['latin'],
     display: 'swap',
-    variable: '--font-inter',
+    variable: '--font-poppins',
 });
 
 export default function RootLayout({ children }) {
@@ -40,7 +41,7 @@ export default function RootLayout({ children }) {
                     }}
                 />
             </head>
-            <body className={`${inter.variable} font-sans antialiased`}>
+            <body className={`${poppins.variable} font-sans antialiased`}>
                 <ThemeProvider>
                     <AuthProvider>
                         <ToastProvider>

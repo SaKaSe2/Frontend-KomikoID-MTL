@@ -37,7 +37,7 @@ export default function Footer() {
     return (
         <footer className="bg-[var(--bg-secondary)] border-t border-[var(--border-primary)]">
             <div className="container mx-auto px-4 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Brand */}
                     <div className="lg:col-span-1">
                         <Link href="/" className="flex items-center gap-2 mb-4">
@@ -95,25 +95,6 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* Legal */}
-                    <div>
-                        <h3 className="font-semibold text-[var(--text-primary)] mb-4">
-                            Informasi
-                        </h3>
-                        <ul className="space-y-2">
-                            {footerLinks.legal.map((link) => (
-                                <li key={link.href}>
-                                    <Link
-                                        href={link.href}
-                                        className="text-sm text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors"
-                                    >
-                                        {link.label}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
                     {/* Newsletter / CTA */}
                     <div>
                         <h3 className="font-semibold text-[var(--text-primary)] mb-4">
@@ -124,7 +105,7 @@ export default function Footer() {
                         </p>
                         <a
                             href="mailto:contact@komiko.id"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--primary-500)] hover:bg-[var(--primary-600)] text-white text-sm font-medium rounded-lg transition-colors"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--primary-500)] hover:bg-[var(--primary-600)] text-gray-900 text-sm font-semibold rounded-lg transition-colors"
                         >
                             <Mail size={16} />
                             Kirim Email

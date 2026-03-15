@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
     User,
     Mail,
@@ -12,43 +14,63 @@ import {
     History,
     MessageSquare,
     Star,
-    Settings,
     Lock,
     Trash2,
     LogOut,
     ChevronRight,
-    AlertCircle,
-    Loader2
+    Shield,
+    Edit3,
+    Calendar,
+    Eye,
+    EyeOff,
+    X
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import userService from '@/lib/api/services/userService';
 import Button from '@/components/ui/Button';
 import Skeleton from '@/components/ui/Skeleton';
-import clsx from 'clsx';
 
-// Stats Card Component
-function StatCard({ icon: Icon, label, value, color = 'primary' }) {
-    const colors = {
-        primary: 'bg-[var(--primary-500)]/10 text-[var(--primary-500)]',
-        blue: 'bg-blue-500/10 text-blue-500',
-        green: 'bg-green-500/10 text-green-500',
-        yellow: 'bg-yellow-500/10 text-yellow-500',
-    };
-
+// Simple Stats Item
+function StatItem({ icon: Icon, label, value }) {
     return (
-        <div className="bg-[var(--bg-secondary)] rounded-xl p-4 border border-[var(--border-primary)]">
-            <div className={clsx('w-10 h-10 rounded-lg flex items-center justify-center mb-3', colors[color])}>
-                <Icon size={20} />
+        <div className="flex items-center gap-3 p-4 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-primary)]">
+            <div className="w-10 h-10 rounded-lg bg-[var(--primary-500)]/10 flex items-center justify-center">
+                <Icon size={18} className="text-[var(--primary-500)]" />
             </div>
-            <p className="text-2xl font-bold text-[var(--text-primary)]">{value}</p>
-            <p className="text-sm text-[var(--text-tertiary)]">{label}</p>
+            <div>
+                <p className="text-xl font-bold text-[var(--text-primary)]">{value}</p>
+                <p className="text-xs text-[var(--text-tertiary)]">{label}</p>
+            </div>
         </div>
     );
 }
 
+// Menu Item
+function MenuItem({ icon: Icon, label, description, onClick, href, danger = false }) {
+    const Component = href ? Link : 'button';
+
+    return (
+        <Component
+            href={href}
+            onClick={onClick}
+            className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left ${danger
+                ? 'hover:bg-red-500/10 text-red-500'
+                : 'hover:bg-[var(--surface-hover)] text-[var(--text-primary)]'
+                }`}
+        >
+            <Icon size={18} className={danger ? 'text-red-500' : 'text-[var(--text-tertiary)]'} />
+            <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">{label}</p>
+                {description && <p className="text-xs text-[var(--text-tertiary)]">{description}</p>}
+            </div>
+            <ChevronRight size={16} className="text-[var(--text-tertiary)]" />
+        </Component>
+    );
+}
+
 // Profile Edit Form
-function ProfileEditForm({ user, onUpdate }) {
+function ProfileEditForm({ user, onUpdate, onClose }) {
     const toast = useToast();
     const fileInputRef = useRef(null);
 
@@ -83,6 +105,7 @@ function ProfileEditForm({ user, onUpdate }) {
             const updatedUser = await userService.updateProfile(formData);
             onUpdate(updatedUser);
             toast.success('Profil berhasil diperbarui');
+            onClose?.();
         } catch (error) {
             toast.error(error.message || 'Gagal memperbarui profil');
         } finally {
@@ -91,20 +114,22 @@ function ProfileEditForm({ user, onUpdate }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Avatar */}
-            <div className="flex items-center gap-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Avatar Upload */}
+            <div className="flex flex-col items-center">
                 <div className="relative">
-                    <div className="w-20 h-20 rounded-full overflow-hidden bg-[var(--bg-tertiary)]">
+                    <div className="w-20 h-20 rounded-full overflow-hidden bg-[var(--bg-tertiary)] border-2 border-[var(--border-primary)]">
                         {avatarPreview ? (
                             <Image
                                 src={avatarPreview}
                                 alt="Avatar"
-                                fill
-                                className="object-cover"
+                                width={80}
+                                height={80}
+                                className="w-full h-full object-cover"
+                                unoptimized
                             />
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-[var(--primary-500)]">
+                            <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-[var(--primary-500)]">
                                 {user?.name?.charAt(0).toUpperCase() || 'U'}
                             </div>
                         )}
@@ -114,7 +139,7 @@ function ProfileEditForm({ user, onUpdate }) {
                         onClick={() => fileInputRef.current?.click()}
                         className="absolute bottom-0 right-0 p-1.5 rounded-full bg-[var(--primary-500)] text-white hover:bg-[var(--primary-600)] transition-colors"
                     >
-                        <Camera size={14} />
+                        <Camera size={12} />
                     </button>
                     <input
                         ref={fileInputRef}
@@ -124,59 +149,34 @@ function ProfileEditForm({ user, onUpdate }) {
                         className="hidden"
                     />
                 </div>
-                <div>
-                    <p className="text-sm text-[var(--text-secondary)]">
-                        Klik ikon kamera untuk mengganti foto
-                    </p>
-                    <p className="text-xs text-[var(--text-tertiary)]">
-                        JPG, PNG. Maksimal 2MB.
-                    </p>
-                </div>
+                <p className="text-xs text-[var(--text-tertiary)] mt-2">Maks. 2MB</p>
             </div>
 
             {/* Name */}
             <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
-                    Nama Lengkap
-                </label>
-                <div className="relative">
-                    <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] transition-all"
-                    />
-                </div>
+                <label className="block text-sm text-[var(--text-secondary)] mb-1.5">Nama</label>
+                <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]"
+                />
             </div>
 
             {/* Email (Read-only) */}
             <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
-                    Email
-                </label>
-                <div className="relative">
-                    <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" />
-                    <input
-                        type="email"
-                        value={user?.email || ''}
-                        disabled
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-tertiary)] opacity-60 cursor-not-allowed"
-                    />
-                </div>
-                <p className="text-xs text-[var(--text-tertiary)] mt-1">
-                    Email tidak dapat diubah
-                </p>
+                <label className="block text-sm text-[var(--text-secondary)] mb-1.5">Email</label>
+                <input
+                    type="email"
+                    value={user?.email || ''}
+                    disabled
+                    className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-tertiary)] text-sm opacity-60 cursor-not-allowed"
+                />
             </div>
 
-            {/* Submit */}
-            <Button
-                type="submit"
-                variant="primary"
-                loading={loading}
-                leftIcon={<Save size={18} />}
-            >
-                Simpan Perubahan
+            <Button type="submit" variant="primary" loading={loading} className="w-full">
+                <Save size={16} className="mr-2" />
+                Simpan
             </Button>
         </form>
     );
@@ -190,28 +190,20 @@ function ChangePasswordForm() {
         password: '',
         password_confirmation: '',
     });
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: null }));
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrors({});
 
-        // Validation
         if (formData.password.length < 8) {
             setErrors({ password: 'Password minimal 8 karakter' });
             return;
         }
         if (formData.password !== formData.password_confirmation) {
-            setErrors({ password_confirmation: 'Konfirmasi password tidak cocok' });
+            setErrors({ password_confirmation: 'Password tidak cocok' });
             return;
         }
 
@@ -221,11 +213,7 @@ function ChangePasswordForm() {
             toast.success('Password berhasil diubah');
             setFormData({ current_password: '', password: '', password_confirmation: '' });
         } catch (error) {
-            if (error.errors) {
-                setErrors(error.errors);
-            } else {
-                toast.error(error.message || 'Gagal mengubah password');
-            }
+            toast.error(error.message || 'Gagal mengubah password');
         } finally {
             setLoading(false);
         }
@@ -234,95 +222,46 @@ function ChangePasswordForm() {
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
-                    Password Saat Ini
-                </label>
+                <label className="block text-sm text-[var(--text-secondary)] mb-1.5">Password Lama</label>
                 <input
-                    type="password"
-                    name="current_password"
+                    type={showPassword ? 'text' : 'password'}
                     value={formData.current_password}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]"
+                    onChange={(e) => setFormData(prev => ({ ...prev, current_password: e.target.value }))}
+                    className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]"
                 />
-                {errors.current_password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.current_password}</p>
-                )}
             </div>
-
             <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
-                    Password Baru
-                </label>
+                <label className="block text-sm text-[var(--text-secondary)] mb-1.5">Password Baru</label>
                 <input
-                    type="password"
-                    name="password"
+                    type={showPassword ? 'text' : 'password'}
                     value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Minimal 8 karakter"
-                    className="w-full px-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]"
+                    onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                    placeholder="Min. 8 karakter"
+                    className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]"
                 />
-                {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                )}
+                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
             </div>
-
             <div>
-                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
-                    Konfirmasi Password Baru
-                </label>
+                <label className="block text-sm text-[var(--text-secondary)] mb-1.5">Konfirmasi Password</label>
                 <input
-                    type="password"
-                    name="password_confirmation"
+                    type={showPassword ? 'text' : 'password'}
                     value={formData.password_confirmation}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]"
+                    onChange={(e) => setFormData(prev => ({ ...prev, password_confirmation: e.target.value }))}
+                    className="w-full px-3 py-2.5 rounded-lg bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)]"
                 />
-                {errors.password_confirmation && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password_confirmation}</p>
-                )}
+                {errors.password_confirmation && <p className="text-red-500 text-xs mt-1">{errors.password_confirmation}</p>}
             </div>
 
-            <Button
-                type="submit"
-                variant="primary"
-                loading={loading}
-                leftIcon={<Lock size={18} />}
-            >
+            <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
+                <input type="checkbox" checked={showPassword} onChange={(e) => setShowPassword(e.target.checked)} />
+                Tampilkan password
+            </label>
+
+            <Button type="submit" variant="primary" loading={loading} className="w-full">
+                <Lock size={16} className="mr-2" />
                 Ubah Password
             </Button>
         </form>
-    );
-}
-
-// Menu Item Component
-function MenuItem({ icon: Icon, label, description, href, onClick, danger = false }) {
-    const Component = href ? 'a' : 'button';
-
-    return (
-        <Component
-            href={href}
-            onClick={onClick}
-            className={clsx(
-                'w-full flex items-center gap-4 p-4 rounded-xl transition-colors text-left',
-                danger
-                    ? 'hover:bg-red-500/10 text-red-500'
-                    : 'hover:bg-[var(--surface-hover)] text-[var(--text-primary)]'
-            )}
-        >
-            <div className={clsx(
-                'w-10 h-10 rounded-lg flex items-center justify-center',
-                danger ? 'bg-red-500/10' : 'bg-[var(--bg-tertiary)]'
-            )}>
-                <Icon size={20} />
-            </div>
-            <div className="flex-1">
-                <p className="font-medium">{label}</p>
-                {description && (
-                    <p className="text-sm text-[var(--text-tertiary)]">{description}</p>
-                )}
-            </div>
-            <ChevronRight size={18} className="text-[var(--text-tertiary)]" />
-        </Component>
     );
 }
 
@@ -332,62 +271,53 @@ export default function ProfilePage() {
     const { user, isAuthenticated, loading: authLoading, logout, updateUser } = useAuth();
     const toast = useToast();
 
-    const [activeTab, setActiveTab] = useState('profile');
+    const [activeModal, setActiveModal] = useState(null); // 'edit' | 'security' | null
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Redirect if not authenticated
     useEffect(() => {
         if (!authLoading && !isAuthenticated) {
             router.push('/login');
         }
     }, [authLoading, isAuthenticated, router]);
 
-    // Fetch profile data
     useEffect(() => {
         async function fetchProfile() {
-            if (!isAuthenticated) return;
-
+            if (authLoading || !isAuthenticated) {
+                setLoading(false);
+                return;
+            }
             try {
                 const data = await userService.getProfile();
                 setProfile(data);
             } catch (error) {
-                console.error('Failed to fetch profile:', error);
-                // Use user from auth context as fallback
                 setProfile(user);
             } finally {
                 setLoading(false);
             }
         }
-
         fetchProfile();
-    }, [isAuthenticated, user]);
+    }, [authLoading, isAuthenticated, user]);
 
-    // Handle profile update
     const handleProfileUpdate = (updatedUser) => {
         setProfile(updatedUser);
         updateUser(updatedUser);
+        setActiveModal(null);
     };
 
-    // Handle logout
     const handleLogout = async () => {
         await logout();
         router.push('/');
     };
 
-    // Handle delete account
     const handleDeleteAccount = async () => {
-        const confirmed = window.confirm(
-            'Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan.'
-        );
-        if (!confirmed) return;
-
-        const password = window.prompt('Masukkan password Anda untuk konfirmasi:');
+        if (!window.confirm('Yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan.')) return;
+        const password = window.prompt('Masukkan password:');
         if (!password) return;
 
         try {
             await userService.deleteAccount(password);
-            toast.success('Akun berhasil dihapus');
+            toast.success('Akun dihapus');
             await logout();
             router.push('/');
         } catch (error) {
@@ -397,27 +327,19 @@ export default function ProfilePage() {
 
     if (authLoading || loading) {
         return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="max-w-4xl mx-auto">
-                    <div className="flex flex-col md:flex-row gap-8">
-                        <div className="w-full md:w-64 space-y-4">
-                            <Skeleton className="h-24 rounded-xl" />
-                            <Skeleton className="h-12 rounded-lg" />
-                            <Skeleton className="h-12 rounded-lg" />
-                        </div>
-                        <div className="flex-1 space-y-4">
-                            <Skeleton className="h-8 w-48" />
-                            <Skeleton className="h-64 rounded-xl" />
-                        </div>
+            <div className="min-h-screen py-8">
+                <div className="w-full flex justify-center px-4">
+                    <div className="w-full max-w-md space-y-4">
+                        <Skeleton className="h-32 rounded-lg" />
+                        <Skeleton className="h-24 rounded-lg" />
+                        <Skeleton className="h-48 rounded-lg" />
                     </div>
                 </div>
             </div>
         );
     }
 
-    if (!isAuthenticated) {
-        return null;
-    }
+    if (!isAuthenticated) return null;
 
     const stats = profile?.stats || user?.stats || {
         bookmarks_count: 0,
@@ -425,135 +347,126 @@ export default function ProfilePage() {
         ratings_count: 0,
     };
 
-    const tabs = [
-        { id: 'profile', label: 'Profil', icon: User },
-        { id: 'security', label: 'Keamanan', icon: Lock },
-        { id: 'menu', label: 'Menu', icon: Settings },
-    ];
-
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="max-w-4xl mx-auto">
-                {/* Header */}
-                <div className="bg-[var(--bg-secondary)] rounded-2xl p-6 border border-[var(--border-primary)] mb-6">
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                        {/* Avatar */}
-                        <div className="w-20 h-20 rounded-full overflow-hidden bg-[var(--bg-tertiary)] flex-shrink-0">
-                            {profile?.avatar ? (
-                                <Image
-                                    src={profile.avatar}
-                                    alt={profile.name}
-                                    width={80}
-                                    height={80}
-                                    className="object-cover"
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-[var(--primary-500)]">
-                                    {profile?.name?.charAt(0).toUpperCase() || 'U'}
-                                </div>
-                            )}
-                        </div>
+        <div className="min-h-screen py-6">
+            <div className="w-full flex justify-center px-4">
+                <div className="w-full max-w-md">
 
-                        {/* Info */}
-                        <div className="text-center sm:text-left flex-1">
-                            <h1 className="text-xl font-bold text-[var(--text-primary)]">
-                                {profile?.name || 'User'}
-                            </h1>
-                            <p className="text-[var(--text-secondary)]">{profile?.email}</p>
-                            <p className="text-sm text-[var(--text-tertiary)] mt-1">
-                                Bergabung sejak {profile?.created_at
-                                    ? new Date(profile.created_at).toLocaleDateString('id-ID', {
-                                        month: 'long',
-                                        year: 'numeric'
-                                    })
-                                    : '-'
-                                }
-                            </p>
+                    {/* Profile Header */}
+                    <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-primary)] p-5 mb-4">
+                        <div className="flex items-center gap-4">
+                            {/* Avatar */}
+                            <div className="relative">
+                                <div className="w-16 h-16 rounded-full overflow-hidden bg-[var(--bg-tertiary)] border-2 border-[var(--primary-500)]">
+                                    {profile?.avatar ? (
+                                        <Image
+                                            src={profile.avatar}
+                                            alt={profile.name}
+                                            width={64}
+                                            height={64}
+                                            className="w-full h-full object-cover"
+                                            unoptimized
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-xl font-bold text-[var(--primary-500)]">
+                                            {profile?.name?.charAt(0).toUpperCase() || 'U'}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Info */}
+                            <div className="flex-1 min-w-0">
+                                <h1 className="text-lg font-bold text-[var(--text-primary)] truncate">
+                                    {profile?.name || 'User'}
+                                </h1>
+                                <p className="text-sm text-[var(--text-secondary)] truncate">{profile?.email}</p>
+                                <p className="text-xs text-[var(--text-tertiary)] mt-1 flex items-center gap-1">
+                                    <Calendar size={12} />
+                                    Bergabung {profile?.created_at
+                                        ? new Date(profile.created_at).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })
+                                        : '-'
+                                    }
+                                </p>
+                            </div>
+
+                            {/* Edit Button */}
+                            <button
+                                onClick={() => setActiveModal('edit')}
+                                className="p-2 rounded-lg hover:bg-[var(--surface-hover)] text-[var(--text-tertiary)] hover:text-[var(--primary-500)] transition-colors"
+                            >
+                                <Edit3 size={18} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                        <StatItem icon={BookMarked} value={stats.bookmarks_count} label="Bookmark" />
+                        <StatItem icon={MessageSquare} value={stats.comments_count} label="Komentar" />
+                        <StatItem icon={Star} value={stats.ratings_count} label="Rating" />
+                    </div>
+
+                    {/* Quick Actions */}
+                    <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-primary)] p-4 mb-4">
+                        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Akses Cepat</h2>
+                        <div className="space-y-1">
+                            <MenuItem icon={BookMarked} label="Bookmark" href="/bookmarks" />
+                            <MenuItem icon={History} label="Riwayat Baca" href="/history" />
+                        </div>
+                    </div>
+
+                    {/* Settings */}
+                    <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-primary)] p-4">
+                        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Pengaturan</h2>
+                        <div className="space-y-1">
+                            <MenuItem icon={User} label="Edit Profil" onClick={() => setActiveModal('edit')} />
+                            <MenuItem icon={Shield} label="Ubah Password" onClick={() => setActiveModal('security')} />
+                            <div className="border-t border-[var(--border-primary)] my-2" />
+                            <MenuItem icon={LogOut} label="Keluar" onClick={handleLogout} />
+                            <MenuItem icon={Trash2} label="Hapus Akun" onClick={handleDeleteAccount} danger />
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                    <StatCard icon={BookMarked} label="Bookmark" value={stats.bookmarks_count} color="primary" />
-                    <StatCard icon={MessageSquare} label="Komentar" value={stats.comments_count} color="blue" />
-                    <StatCard icon={Star} label="Rating" value={stats.ratings_count} color="yellow" />
-                </div>
-
-                {/* Tabs */}
-                <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-                    {tabs.map((tab) => {
-                        const Icon = tab.icon;
-                        return (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id)}
-                                className={clsx(
-                                    'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors',
-                                    activeTab === tab.id
-                                        ? 'bg-[var(--primary-500)] text-white'
-                                        : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]'
-                                )}
-                            >
-                                <Icon size={16} />
-                                {tab.label}
+            {/* Edit Profile Modal */}
+            {activeModal === 'edit' && typeof document !== 'undefined' && createPortal(
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setActiveModal(null)} />
+                    <div className="relative w-full max-w-sm mx-auto bg-[var(--bg-card)] rounded-lg border border-[var(--border-primary)] shadow-xl">
+                        <div className="flex items-center justify-between p-4 border-b border-[var(--border-primary)]">
+                            <h2 className="font-semibold text-[var(--text-primary)]">Edit Profil</h2>
+                            <button onClick={() => setActiveModal(null)} className="p-1 hover:bg-[var(--surface-hover)] rounded">
+                                <X size={18} className="text-[var(--text-tertiary)]" />
                             </button>
-                        );
-                    })}
-                </div>
-
-                {/* Tab Content */}
-                <div className="bg-[var(--bg-secondary)] rounded-2xl p-6 border border-[var(--border-primary)]">
-                    {activeTab === 'profile' && (
-                        <div>
-                            <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-6">
-                                Edit Profil
-                            </h2>
-                            <ProfileEditForm user={profile} onUpdate={handleProfileUpdate} />
                         </div>
-                    )}
+                        <div className="p-4">
+                            <ProfileEditForm user={profile} onUpdate={handleProfileUpdate} onClose={() => setActiveModal(null)} />
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
 
-                    {activeTab === 'security' && (
-                        <div>
-                            <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-6">
-                                Ubah Password
-                            </h2>
+            {/* Security Modal */}
+            {activeModal === 'security' && typeof document !== 'undefined' && createPortal(
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setActiveModal(null)} />
+                    <div className="relative w-full max-w-sm mx-auto bg-[var(--bg-card)] rounded-lg border border-[var(--border-primary)] shadow-xl">
+                        <div className="flex items-center justify-between p-4 border-b border-[var(--border-primary)]">
+                            <h2 className="font-semibold text-[var(--text-primary)]">Ubah Password</h2>
+                            <button onClick={() => setActiveModal(null)} className="p-1 hover:bg-[var(--surface-hover)] rounded">
+                                <X size={18} className="text-[var(--text-tertiary)]" />
+                            </button>
+                        </div>
+                        <div className="p-4">
                             <ChangePasswordForm />
                         </div>
-                    )}
-
-                    {activeTab === 'menu' && (
-                        <div className="space-y-2">
-                            <MenuItem
-                                icon={BookMarked}
-                                label="Bookmark Saya"
-                                description="Lihat komik yang disimpan"
-                                href="/bookmarks"
-                            />
-                            <MenuItem
-                                icon={History}
-                                label="Riwayat Baca"
-                                description="Lihat riwayat bacaan"
-                                href="/history"
-                            />
-                            <div className="border-t border-[var(--border-primary)] my-4" />
-                            <MenuItem
-                                icon={LogOut}
-                                label="Keluar"
-                                description="Keluar dari akun"
-                                onClick={handleLogout}
-                            />
-                            <MenuItem
-                                icon={Trash2}
-                                label="Hapus Akun"
-                                description="Hapus akun secara permanen"
-                                onClick={handleDeleteAccount}
-                                danger
-                            />
-                        </div>
-                    )}
-                </div>
-            </div>
+                    </div>
+                </div>,
+                document.body
+            )}
         </div>
     );
 }

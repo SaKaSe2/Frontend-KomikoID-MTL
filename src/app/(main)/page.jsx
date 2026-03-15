@@ -18,108 +18,86 @@ import comicService from '@/lib/api/services/comicService';
 import Skeleton from '@/components/ui/Skeleton';
 import clsx from 'clsx';
 
-// Comic Card Component
+// Comic Card Component - Horizontal Layout like Komikcast
 function ComicCard({ comic, priority = false }) {
+    // Get chapters from various possible API response formats
+    let chapters = [];
+    if (comic.chapters && comic.chapters.length > 0) {
+        chapters = comic.chapters;
+    } else if (comic.latest_chapters && comic.latest_chapters.length > 0) {
+        chapters = comic.latest_chapters;
+    } else if (comic.latest_chapter) {
+        // If only latest_chapter object exists, create array from it
+        chapters = [comic.latest_chapter];
+    }
+
     return (
-        <Link
-            href={`/comics/${comic.slug}`}
-            className="group relative bg-[var(--bg-secondary)] rounded-xl overflow-hidden card-hover border border-[var(--border-primary)]"
-        >
-            {/* Cover */}
-            <div className="relative aspect-[3/4] overflow-hidden">
+        <div className="flex bg-[var(--bg-card)] rounded-lg overflow-hidden hover:bg-[var(--bg-tertiary)] transition-colors">
+            {/* Cover - Left Side */}
+            <Link href={`/comics/${comic.slug}`} className="relative w-20 h-28 flex-shrink-0">
                 <Image
                     src={comic.cover_image_url || '/images/placeholders/comic-placeholder.png'}
                     alt={comic.title}
                     fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    sizes="80px"
+                    className="object-cover"
                     priority={priority}
                 />
-                {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                {/* HOT Badge */}
+                <span className="absolute top-0 left-0 px-1.5 py-0.5 text-[8px] font-bold uppercase bg-red-500 text-white">
+                    HOT
+                </span>
+            </Link>
 
-                {/* Type Badge */}
-                <div className="absolute top-2 left-2">
-                    <span className={clsx(
-                        'px-2 py-1 text-xs font-medium rounded-md',
-                        comic.type === 'manga' && 'bg-red-500 text-white',
-                        comic.type === 'manhwa' && 'bg-blue-500 text-white',
-                        comic.type === 'manhua' && 'bg-green-500 text-white',
-                        !['manga', 'manhwa', 'manhua'].includes(comic.type) && 'bg-gray-500 text-white'
-                    )}>
-                        {comic.type?.toUpperCase() || 'KOMIK'}
-                    </span>
-                </div>
+            {/* Info - Right Side */}
+            <div className="flex-1 p-2 min-w-0">
+                {/* Title */}
+                <Link href={`/comics/${comic.slug}`}>
+                    <h3 className="text-sm font-medium text-[var(--text-primary)] line-clamp-1 hover:text-[var(--primary-500)] transition-colors">
+                        {comic.title}
+                    </h3>
+                </Link>
 
-                {/* Rating */}
-                {comic.rating && (
-                    <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/60 rounded-md">
-                        <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                        <span className="text-xs font-medium text-white">{parseFloat(comic.rating).toFixed(1)}</span>
-                    </div>
-                )}
-            </div>
-
-            {/* Info */}
-            <div className="p-3">
-                <h3 className="font-semibold text-sm text-[var(--text-primary)] line-clamp-2 group-hover:text-[var(--primary-500)] transition-colors">
-                    {comic.title}
-                </h3>
-
-                {/* Genres */}
-                {comic.genres && comic.genres.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                        {comic.genres.slice(0, 2).map((genre) => (
-                            <span
-                                key={genre.slug}
-                                className="text-xs text-[var(--text-tertiary)] bg-[var(--bg-tertiary)] px-2 py-0.5 rounded"
+                {/* Chapter List - Only show if chapters exist, max 2 */}
+                {chapters.length > 0 && (
+                    <div className="mt-1.5 space-y-1">
+                        {chapters.slice(0, 2).map((ch, idx) => (
+                            <Link
+                                key={idx}
+                                href={`/comics/${comic.slug}/chapter/${ch.number || ch.chapter_number}`}
+                                className="flex items-center justify-between text-xs group"
                             >
-                                {genre.name}
-                            </span>
+                                <span className="text-[var(--text-secondary)] group-hover:text-[var(--primary-500)] transition-colors">
+                                    Ch. {ch.number || ch.chapter_number}
+                                </span>
+                                <span className="text-[var(--text-tertiary)] text-[10px]">
+                                    {ch.time_ago || ch.published_at || ch.created_at || 'Baru'}
+                                </span>
+                            </Link>
                         ))}
                     </div>
                 )}
-
-                {/* Status */}
-                <div className="flex items-center justify-between mt-2 text-xs text-[var(--text-tertiary)]">
-                    <span className={clsx(
-                        'px-2 py-0.5 rounded',
-                        comic.status === 'ongoing' && 'bg-green-500/10 text-green-500',
-                        comic.status === 'completed' && 'bg-blue-500/10 text-blue-500',
-                        comic.status === 'hiatus' && 'bg-yellow-500/10 text-yellow-500'
-                    )}>
-                        {comic.status === 'ongoing' ? 'Ongoing' :
-                            comic.status === 'completed' ? 'Tamat' :
-                                comic.status === 'hiatus' ? 'Hiatus' : comic.status}
-                    </span>
-                    {comic.total_chapters && (
-                        <span className="flex items-center gap-1">
-                            <BookOpen size={12} />
-                            {comic.total_chapters} Ch
-                        </span>
-                    )}
-                </div>
-            </div>
-        </Link>
-    );
-}
-
-// Comic Card Skeleton
-function ComicCardSkeleton() {
-    return (
-        <div className="bg-[var(--bg-secondary)] rounded-xl overflow-hidden border border-[var(--border-primary)]">
-            <Skeleton className="aspect-[3/4]" />
-            <div className="p-3 space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-                <div className="flex gap-1">
-                    <Skeleton className="h-5 w-16" />
-                    <Skeleton className="h-5 w-12" />
-                </div>
             </div>
         </div>
     );
 }
+
+
+// Comic Card Skeleton - Horizontal
+function ComicCardSkeleton() {
+    return (
+        <div className="flex bg-[var(--bg-card)] rounded-lg overflow-hidden">
+            <div className="w-20 h-28 bg-[var(--bg-tertiary)] animate-pulse flex-shrink-0" />
+            <div className="flex-1 p-2 space-y-2">
+                <div className="h-4 bg-[var(--bg-tertiary)] rounded animate-pulse w-3/4" />
+                <div className="h-3 bg-[var(--bg-tertiary)] rounded animate-pulse" />
+                <div className="h-3 bg-[var(--bg-tertiary)] rounded animate-pulse" />
+                <div className="h-3 bg-[var(--bg-tertiary)] rounded animate-pulse" />
+            </div>
+        </div>
+    );
+}
+
 
 // Hero Section
 function HeroSection({ featuredComics }) {
@@ -135,7 +113,7 @@ function HeroSection({ featuredComics }) {
 
     if (!featuredComics?.length) {
         return (
-            <section className="relative h-[500px] md:h-[600px] bg-gradient-to-br from-[var(--primary-900)] via-[var(--primary-800)] to-[var(--bg-primary)]">
+            <section className="relative h-[400px] sm:h-[500px] md:h-[550px] bg-gradient-to-br from-[var(--primary-900)] via-[var(--primary-800)] to-[var(--bg-primary)]">
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
                         <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
@@ -157,7 +135,7 @@ function HeroSection({ featuredComics }) {
     const currentComic = featuredComics[currentSlide];
 
     return (
-        <section className="relative h-[500px] md:h-[600px] overflow-hidden">
+        <section className="relative h-[400px] sm:h-[500px] md:h-[550px] overflow-hidden">
             {/* Background */}
             <div className="absolute inset-0">
                 <Image
@@ -201,7 +179,7 @@ function HeroSection({ featuredComics }) {
                     <div className="flex items-center gap-4">
                         <Link
                             href={`/comics/${currentComic.slug}`}
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary-500)] hover:bg-[var(--primary-600)] text-white font-medium rounded-xl transition-colors"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary-500)] hover:bg-[var(--primary-600)] text-gray-900 font-semibold rounded-xl transition-colors"
                         >
                             <BookOpen size={20} />
                             Baca Sekarang
@@ -249,21 +227,18 @@ function HeroSection({ featuredComics }) {
     );
 }
 
-// Section Header
+// Section Header - Like reference sites with bottom border
 function SectionHeader({ icon: Icon, title, href, linkText = 'Lihat Semua' }) {
     return (
-        <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-                {Icon && <Icon size={24} className="text-[var(--primary-500)]" />}
-                <h2 className="text-xl md:text-2xl font-bold text-[var(--text-primary)]">{title}</h2>
+        <div className="section-header">
+            <div className="section-title">
+                {Icon && <Icon size={20} className="icon" />}
+                <h2>{title}</h2>
             </div>
             {href && (
-                <Link
-                    href={href}
-                    className="flex items-center gap-1 text-sm font-medium text-[var(--primary-500)] hover:text-[var(--primary-400)] transition-colors"
-                >
+                <Link href={href} className="section-link">
                     {linkText}
-                    <ArrowRight size={16} />
+                    <ArrowRight size={14} />
                 </Link>
             )}
         </div>
@@ -305,7 +280,7 @@ export default function HomePage() {
             <HeroSection featuredComics={featuredComics} />
 
             {/* Latest Updates */}
-            <section className="py-12 md:py-16">
+            <section className="py-8 sm:py-12 md:py-16">
                 <div className="container mx-auto px-4">
                     <SectionHeader
                         icon={Clock}
@@ -314,15 +289,15 @@ export default function HomePage() {
                     />
 
                     {loading ? (
-                        <div className="comic-grid">
-                            {[...Array(6)].map((_, i) => (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[...Array(9)].map((_, i) => (
                                 <ComicCardSkeleton key={i} />
                             ))}
                         </div>
                     ) : latestComics.length > 0 ? (
-                        <div className="comic-grid">
-                            {latestComics.slice(0, 12).map((comic, idx) => (
-                                <ComicCard key={comic.uuid || comic.slug} comic={comic} priority={idx < 6} />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {latestComics.slice(0, 9).map((comic, idx) => (
+                                <ComicCard key={comic.uuid || comic.slug} comic={comic} priority={idx < 3} />
                             ))}
                         </div>
                     ) : (
@@ -335,7 +310,7 @@ export default function HomePage() {
             </section>
 
             {/* Popular Comics */}
-            <section className="py-12 md:py-16 bg-[var(--bg-secondary)]">
+            <section className="py-8 sm:py-12 md:py-16 bg-[var(--bg-secondary)]">
                 <div className="container mx-auto px-4">
                     <SectionHeader
                         icon={TrendingUp}
@@ -344,14 +319,14 @@ export default function HomePage() {
                     />
 
                     {loading ? (
-                        <div className="comic-grid">
-                            {[...Array(6)].map((_, i) => (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[...Array(9)].map((_, i) => (
                                 <ComicCardSkeleton key={i} />
                             ))}
                         </div>
                     ) : popularComics.length > 0 ? (
-                        <div className="comic-grid">
-                            {popularComics.slice(0, 12).map((comic) => (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {popularComics.slice(0, 9).map((comic) => (
                                 <ComicCard key={comic.uuid || comic.slug} comic={comic} />
                             ))}
                         </div>
@@ -363,32 +338,8 @@ export default function HomePage() {
                     )}
                 </div>
             </section>
-
-            {/* MTL Feature Highlight */}
-            <section className="py-16 md:py-24">
-                <div className="container mx-auto px-4">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--primary-500)]/10 rounded-full mb-6">
-                            <Languages size={20} className="text-[var(--primary-500)]" />
-                            <span className="text-sm font-medium text-[var(--primary-500)]">MTL Technology</span>
-                        </div>
-                        <h2 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-4">
-                            Terjemahan Bahasa Indonesia
-                        </h2>
-                        <p className="text-lg text-[var(--text-secondary)] mb-8 max-w-2xl mx-auto">
-                            Nikmati komik favorit Anda dengan terjemahan bahasa Indonesia menggunakan teknologi Machine Translation terbaru.
-                            Cepat, akurat, dan mudah digunakan.
-                        </p>
-                        <Link
-                            href="/comics"
-                            className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--primary-500)] hover:bg-[var(--primary-600)] text-white font-medium rounded-xl transition-colors"
-                        >
-                            Jelajahi Komik
-                            <ArrowRight size={20} />
-                        </Link>
-                    </div>
-                </div>
-            </section>
         </div>
     );
 }
+
+

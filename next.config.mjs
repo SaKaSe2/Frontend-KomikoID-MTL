@@ -29,9 +29,6 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
 
-  // Enable SWC minification
-  swcMinify: true,
-
   // Reduce bundle size
   modularizeImports: {
     'lodash': {

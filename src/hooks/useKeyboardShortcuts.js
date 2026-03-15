@@ -53,6 +53,9 @@ export default function useKeyboardShortcuts(handlers = {}, options = {}) {
         const tagName = event.target.tagName.toLowerCase();
         const isInputField = tagName === 'input' || tagName === 'textarea' || event.target.isContentEditable;
 
+        // Skip if event.key is undefined (can happen with browser autofill)
+        if (!event.key) return;
+
         // Build key combination string
         const keys = [];
         if (event.ctrlKey) keys.push('ctrl');

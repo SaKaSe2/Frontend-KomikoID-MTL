@@ -36,8 +36,8 @@ export const ENDPOINTS = {
 
     // User
     USER: {
-        PROFILE: '/user',
-        UPDATE_PROFILE: '/profile',
+        PROFILE: '/user/profile',
+        UPDATE_PROFILE: '/user/profile',
         PREFERENCES: '/user/preferences',
         UPDATE_PREFERENCES: '/user/preferences',
     },
