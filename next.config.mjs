@@ -16,11 +16,17 @@ const nextConfig = {
         hostname: '*.komiko.id',
         pathname: '/storage/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
     // Mobile-first device sizes
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    qualities: [25, 50, 75, 85, 90, 100],
     // Lower quality for faster loading on mobile
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days cache
   },
@@ -80,7 +86,7 @@ const nextConfig = {
           // Content Security Policy
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: http://localhost:8000 https://*.komiko.id; connect-src 'self' http://localhost:8000 https://*.komiko.id;",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: http://localhost:8000 https://*.komiko.id https://res.cloudinary.com; connect-src 'self' http://localhost:8000 https://*.komiko.id;",
           },
         ],
       },
