@@ -86,7 +86,7 @@ const nextConfig = {
           // Content Security Policy
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: http://localhost:8000 https://*.komiko.id https://res.cloudinary.com; connect-src 'self' http://localhost:8000 https://*.komiko.id;",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: http://localhost:8000 https://*.komiko.id https://res.cloudinary.com https://komikoid.zeabur.app; connect-src 'self' http://localhost:8000 https://*.komiko.id https://komikoid.zeabur.app;",
           },
         ],
       },
