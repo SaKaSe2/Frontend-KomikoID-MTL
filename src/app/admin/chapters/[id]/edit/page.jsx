@@ -166,10 +166,14 @@ export default function EditChapterPage() {
                 const data = await adminService.getChapter(chapterId);
                 setTranslationStatus(data.translation_status);
 
+                // Update pages on every poll so progress bar updates incrementally
+                if (data.pages) {
+                    setPages(data.pages);
+                }
+
                 if (data.translation_status === 'completed') {
                     clearInterval(pollInterval);
                     toast.success('Terjemahan selesai!');
-                    setPages(data.pages || []);
                 } else if (data.translation_status === 'failed') {
                     clearInterval(pollInterval);
                     toast.error('Terjemahan gagal. Periksa log server untuk detailnya.');
