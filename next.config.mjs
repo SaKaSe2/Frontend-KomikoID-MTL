@@ -18,6 +18,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: '*.koyeb.app',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'res.cloudinary.com',
         pathname: '/**',
       },
@@ -86,7 +91,7 @@ const nextConfig = {
           // Content Security Policy
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: http://localhost:8000 https://*.komiko.id https://res.cloudinary.com https://komikoid.zeabur.app; connect-src 'self' http://localhost:8000 https://*.komiko.id https://komikoid.zeabur.app;",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: http://localhost:8000 https://*.komiko.id https://*.koyeb.app https://res.cloudinary.com https://komikoid.zeabur.app; connect-src 'self' http://localhost:8000 https://*.komiko.id https://*.koyeb.app https://komikoid.zeabur.app;",
           },
         ],
       },
